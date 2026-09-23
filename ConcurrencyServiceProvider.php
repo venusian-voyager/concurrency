@@ -11,10 +11,11 @@ class ConcurrencyServiceProvider extends ServiceProvider implements DeferrablePr
      * Register the service provider.
      *
      * @return void
+     * @throws \ReflectionException
      */
-    public function register()
+    public function register(): void
     {
-        $this->app->singleton(ConcurrencyManager::class, function ($app) {
+        $this->app->registerSingleton(ConcurrencyManager::class, function ($app) {
             return new ConcurrencyManager($app);
         });
     }
@@ -24,7 +25,7 @@ class ConcurrencyServiceProvider extends ServiceProvider implements DeferrablePr
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return [
             ConcurrencyManager::class,

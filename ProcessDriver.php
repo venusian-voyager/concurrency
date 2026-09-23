@@ -4,7 +4,7 @@ namespace Voyager\Concurrency;
 
 use Closure;
 use Exception;
-use Voyager\Console\Application;
+use Voyager\Console\ComputerConsoleInstance;
 use Voyager\Contracts\Concurrency\Driver;
 use Voyager\Process\Factory as ProcessFactory;
 use Voyager\Process\Pool;
@@ -29,12 +29,12 @@ class ProcessDriver implements Driver
      */
     public function run(Closure|array $tasks): array
     {
-        $command = Application::formatCommandString('invoke-serialized-closure');
+        $command = ComputerConsoleInstance::formatCommandString('invoke-serialized-closure');
 
         $results = $this->processFactory->pool(function (Pool $pool) use ($tasks, $command) {
             foreach (Arr::wrap($tasks) as $key => $task) {
                 $pool->as($key)->path(base_path())->env([
-                    'LARAVEL_INVOKABLE_CLOSURE' => base64_encode(
+                    'VENUSIAN_INVOKABLE_CLOSURE' => base64_encode(
                         serialize(new SerializableClosure($task))
                     ),
                 ])->command($command);
@@ -71,12 +71,12 @@ class ProcessDriver implements Driver
      */
     public function defer(Closure|array $tasks): DeferredCallback
     {
-        $command = Application::formatCommandString('invoke-serialized-closure');
+        $command = ComputerConsoleInstance::formatCommandString('invoke-serialized-closure');
 
         return defer(function () use ($tasks, $command) {
             foreach (Arr::wrap($tasks) as $task) {
                 $this->processFactory->path(base_path())->env([
-                    'LARAVEL_INVOKABLE_CLOSURE' => base64_encode(
+                    'VENUSIAN_INVOKABLE_CLOSURE' => base64_encode(
                         serialize(new SerializableClosure($task))
                     ),
                 ])->run($command.' 2>&1 &');

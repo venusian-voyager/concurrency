@@ -15,10 +15,10 @@ class ConcurrencyManager extends MultipleInstanceManager
     /**
      * Get a driver instance by name.
      *
-     * @param  string|null  $name
+     * @param string|null $name
      * @return mixed
      */
-    public function driver($name = null)
+    public function driver(?string $name = null): mixed
     {
         return $this->instance($name);
     }
@@ -28,7 +28,7 @@ class ConcurrencyManager extends MultipleInstanceManager
      *
      * @return \Voyager\Concurrency\ProcessDriver
      */
-    public function createProcessDriver()
+    public function createProcessDriver(): ProcessDriver
     {
         return new ProcessDriver($this->app->make(ProcessFactory::class));
     }
@@ -40,12 +40,8 @@ class ConcurrencyManager extends MultipleInstanceManager
      *
      * @throws \RuntimeException
      */
-    public function createForkDriver()
+    public function createForkDriver(): ForkDriver
     {
-        if (! $this->app->runningInConsole()) {
-            throw new RuntimeException('Due to PHP limitations, the fork driver may not be used within web requests.');
-        }
-
         if (! class_exists(Fork::class)) {
             throw new RuntimeException('Please install the "spatie/fork" Composer package in order to utilize the "fork" driver.');
         }
@@ -58,7 +54,7 @@ class ConcurrencyManager extends MultipleInstanceManager
      *
      * @return \Voyager\Concurrency\SyncDriver
      */
-    public function createSyncDriver()
+    public function createSyncDriver(): SyncDriver
     {
         return new SyncDriver;
     }
@@ -68,7 +64,7 @@ class ConcurrencyManager extends MultipleInstanceManager
      *
      * @return string
      */
-    public function getDefaultInstance()
+    public function getDefaultInstance(): string
     {
         return $this->app['config']['concurrency.default']
             ?? $this->app['config']['concurrency.driver']
@@ -78,10 +74,10 @@ class ConcurrencyManager extends MultipleInstanceManager
     /**
      * Set the default instance name.
      *
-     * @param  string  $name
+     * @param string $name
      * @return void
      */
-    public function setDefaultInstance($name)
+    public function setDefaultInstance(string $name): void
     {
         $this->app['config']['concurrency.default'] = $name;
         $this->app['config']['concurrency.driver'] = $name;
@@ -90,10 +86,10 @@ class ConcurrencyManager extends MultipleInstanceManager
     /**
      * Get the instance specific configuration.
      *
-     * @param  string  $name
+     * @param string $name
      * @return array
      */
-    public function getInstanceConfig($name)
+    public function getInstanceConfig(string $name): array
     {
         return $this->app['config']->get(
             'concurrency.driver.'.$name, ['driver' => $name],
