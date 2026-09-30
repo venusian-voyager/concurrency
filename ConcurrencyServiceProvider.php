@@ -18,6 +18,8 @@ class ConcurrencyServiceProvider extends ServiceProvider implements DeferrablePr
         $this->app->registerSingleton(ConcurrencyManager::class, function ($app) {
             return new ConcurrencyManager($app);
         });
+
+        $this->app->alias(ConcurrencyManager::class, 'concurrency');
     }
 
     /**
@@ -29,6 +31,7 @@ class ConcurrencyServiceProvider extends ServiceProvider implements DeferrablePr
     {
         return [
             ConcurrencyManager::class,
+            'concurrency',
         ];
     }
 }

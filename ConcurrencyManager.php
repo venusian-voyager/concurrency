@@ -4,7 +4,11 @@ namespace Voyager\Concurrency;
 
 use Voyager\Process\Factory as ProcessFactory;
 use Voyager\NutsAndBolts\MultipleInstanceManager;
+use Closure;
 use RuntimeException;
+use InvalidArgumentException;
+use Voyager\Contracts\IOPools\Promise;
+use Voyager\Contracts\Concurrency\AsyncDriver;
 use Spatie\Fork\Fork;
 
 /**
@@ -50,6 +54,38 @@ class ConcurrencyManager extends MultipleInstanceManager
     }
 
     /**
+     * Create an instance of the pool concurrency driver.
+     *
+     * @param  array{pool?: 'auto'|'thread'|'process'}  $config
+     */
+    public function createPoolDriver(array $config): PoolDriver
+    {
+        return new PoolDriver($this->app, $config['pool'] ?? 'auto');
+    }
+
+    /**
+     * Run the tasks on the default driver without blocking. Their results arrive together as
+     * ConcurrencyResults mail named "concurrency:{$name}", and the promise settles with them.
+     *
+     * @param  Closure|array<array-key, Closure>  $tasks
+     * @return Promise the results keyed as the tasks were, or the first failure in key order
+     *
+     * @throws InvalidArgumentException the default driver only runs tasks blocking
+     */
+    public function async(Closure|array $tasks, string $name = 'default'): Promise
+    {
+        $driver = $this->driver();
+
+        if (! $driver instanceof AsyncDriver) {
+            throw new InvalidArgumentException(
+                "The [{$this->getDefaultInstance()}] concurrency driver only runs tasks blocking: async() needs the process or pool driver."
+            );
+        }
+
+        return $driver->async($tasks, $name);
+    }
+
+    /**
      * Create an instance of the sync concurrency driver.
      *
      * @return \Voyager\Concurrency\SyncDriver
@@ -92,7 +128,7 @@ class ConcurrencyManager extends MultipleInstanceManager
     public function getInstanceConfig(string $name): array
     {
         return $this->app['config']->get(
-            'concurrency.driver.'.$name, ['driver' => $name],
+            'concurrency.drivers.'.$name, ['driver' => $name],
         );
     }
 }

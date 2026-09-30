@@ -5,10 +5,8 @@ namespace Voyager\Concurrency;
 use Closure;
 use Voyager\Contracts\Concurrency\Driver;
 use Voyager\NutsAndBolts\DataObjects\Arr;
-use Voyager\NutsAndBolts\Defer\DeferredCallback;
 use Spatie\Fork\Fork;
 
-use function Voyager\NutsAndBolts\defer;
 
 class ForkDriver implements Driver
 {
@@ -28,13 +26,5 @@ class ForkDriver implements Driver
         ksort($results);
 
         return array_combine($keys, $results);
-    }
-
-    /**
-     * Start the given tasks in the background after the current task has finished.
-     */
-    public function defer(Closure|array $tasks): DeferredCallback
-    {
-        return defer(fn () => $this->run($tasks));
     }
 }
