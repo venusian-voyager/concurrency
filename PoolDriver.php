@@ -134,7 +134,7 @@ class PoolDriver implements AsyncDriver
     protected function workers(): WorkerPool
     {
         $binding = match ($this->pool) {
-            'auto' => $this->app->isBound('thread-workers') ? 'thread-workers' : 'process-workers',
+            'auto' => \Voyager\IOPools\WorkerPools\AutoPool::binding($this->app) ?? 'process-workers',
             'thread' => 'thread-workers',
             'process' => 'process-workers',
             default => throw new InvalidArgumentException(
