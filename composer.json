@@ -14,16 +14,16 @@
     "require": {
         "php": "~8.4.27||^8.5.12",
         "laravel/serializable-closure": "^2.0",
-        "venusian-voyager/collections": "^0.10.0",
-        "venusian-voyager/console": "^0.10.0",
-        "venusian-voyager/contracts": "^0.10.0",
-        "venusian-voyager/nuts-and-bolts": "^0.10.0",
-        "venusian-voyager/process": "^0.10.0",
-        "venusian-voyager/vessel": "^0.10.0"
+        "venusian-voyager/collections": "^0.11.0",
+        "venusian-voyager/console": "^0.11.0",
+        "venusian-voyager/contracts": "^0.11.0",
+        "venusian-voyager/nuts-and-bolts": "^0.11.0",
+        "venusian-voyager/process": "^0.11.0",
+        "venusian-voyager/vessel": "^0.11.0"
     },
     "suggest": {
         "spatie/fork": "Required to use the fork concurrency driver (^1.2).",
-        "venusian-voyager/io-pools": "Required for async() and the pool concurrency driver (^0.10.0)."
+        "venusian-voyager/io-pools": "Required for async() and the pool concurrency driver (^0.11.0)."
     },
     "autoload": {
         "psr-4": {
@@ -32,7 +32,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.10.x-dev"
+            "dev-main": "0.11.x-dev"
         }
     },
     "config": {
